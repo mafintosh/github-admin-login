@@ -1,0 +1,21 @@
+{
+  "name": "github-admin-login",
+  "version": "0.0.0",
+  "description": "HTTP auth module to require admin page users to be in a Github org",
+  "main": "index.js",
+  "dependencies": {
+    "cookie": "^0.3.1",
+    "sodium-universal": "^2.0.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/github-admin-login.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/github-admin-login/issues"
+  },
+  "homepage": "https://github.com/mafintosh/github-admin-login"
+}
