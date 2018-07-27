@@ -24,6 +24,7 @@ function login (opts) {
   if (!opts.clientId) throw new Error('opts.clientId is needed')
   if (!opts.clientSecret) throw new Error('opts.clientSecret is needed')
 
+  var protocol = opts.protocol || ''
   const check = getChecker()
   const secrets = [randomBytes(32), randomBytes(32)]
   setInterval(rotate, 15 * 60 * 1000).unref()
@@ -50,13 +51,31 @@ function login (opts) {
     if (username) return next(null, username)
 
     const u = url.parse(req.url, true)
-    const path = decodeState(u.query.state)
-
-    if (!validCode(u.query.code) || path === null) return redirect(res, authUrl(req))
-    checkUser(path, u.query, req, res, next)
+    const state = verify(u.query.state)
+    if (state === 'ping') return res.end()
+    if (!validCode(u.query.code) || state !== 'login') return oauth(req, res)
+    checkUser(u.query, req, res, next)
   }
 
-  function checkUser (path, query, req, res, next) {
+  function oauth (req, res) {
+    if (!protocol) return protocolAndOauth(req, res)
+    redirect(res, authUrl(req))
+  }
+
+  function protocolAndOauth (req, res) {
+    get.concat({
+      url: 'https://' + req.headers.host + req.url.split('?')[0] + '?state=' + sign('ping'),
+      headers: {
+        'User-Agent': 'github-admin-login'
+      },
+      timeout: 10000
+    }, function (err) {
+      protocol = err ? 'http://' : 'https://'
+      oauth(req, res)
+    })
+  }
+
+  function checkUser (query, req, res, next) {
     get.concat({
       method: 'POST',
       url: 'https://github.com/login/oauth/access_token',
@@ -88,7 +107,7 @@ function login (opts) {
           }
 
           encode(res, user.login)
-          redirect(res, path)
+          redirect(res, req.url.replace(/[?&]code=[^&]+&state=[^&]+$/, ''))
         })
       })
     }
@@ -135,17 +154,12 @@ function login (opts) {
   }
 
   function authUrl (req) {
-    const state = sign(Buffer.from(req.url).toString('hex'))
+    const state = sign('login')
     return 'https://github.com/login/oauth/authorize' +
       '?client_id=' + opts.clientId +
       '&scope=user' +
-      '&redirect_uri=' +
+      '&redirect_uri=' + encodeURIComponent(protocol + req.headers.host + req.url) +
       '&state=' + state
-  }
-
-  function decodeState (data) {
-    const st = verify(data)
-    return st && Buffer.from(st, 'hex').toString()
   }
 
   function hmac (username, n) {
