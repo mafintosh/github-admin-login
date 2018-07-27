@@ -45,6 +45,9 @@ Options include:
 }
 ```
 
+You can get the `clientId` and `clientSecret` by making a new OAuth app on your
+Github org or user profile. Make sure to set the callback url to the root of your website.
+
 Only users in the `users` array of users who are in the org
 specified will be allowed to login.
 
