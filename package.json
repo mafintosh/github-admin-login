@@ -1,6 +1,6 @@
 {
   "name": "github-admin-login",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "HTTP auth module to require admin page users to be in a Github org",
   "main": "index.js",
   "dependencies": {
