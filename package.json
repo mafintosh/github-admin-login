@@ -5,9 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "cookie": "^0.3.1",
+    "simple-get": "^3.0.2",
     "sodium-universal": "^2.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
+  "scripts": {
+    "test": "standard"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mafintosh/github-admin-login.git"
