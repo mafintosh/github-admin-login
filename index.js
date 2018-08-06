@@ -125,7 +125,7 @@ function login (opts) {
   }
 
   function checkOrg (token, username, done) {
-    github('/orgs/' + opts.organization + '/members/' + username, token, false, function (err, member) {
+    github('/orgs/' + opts.organization + '/memberships/' + username, token, false, function (err, member) {
       if (err) return done(err)
       done(null, !!member)
     })
