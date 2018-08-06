@@ -170,7 +170,7 @@ function login (opts) {
   }
 
   function encode (res, username) {
-    res.setHeader('Set-Cookie', cookie.serialize('gh_name', sign(username)))
+    res.setHeader('Set-Cookie', cookie.serialize('gh_name', sign(username)) + '; Path=/')
   }
 
   function sign (data) {
